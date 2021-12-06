@@ -7,7 +7,7 @@ function hist_equalization(mat)
 
     nl = zeros(Int, L)
     for i in 1:R, j in 1:C
-        l = floor(Int, mat[i, j].val * (L - 1)) # Convert to Int, ranging from 0 to 255.
+        l = round(Int, mat[i, j].val * (L - 1)) # Convert to Int, ranging from 0 to 255.
 
         l = min(l, L - 1)
         l = max(l, 1)
@@ -17,13 +17,13 @@ function hist_equalization(mat)
 
     s = []
     for r in 1:L
-        push!(s, round((L - 1) / (R * C) * sum([nl[l] for l in 1:r])))
+        push!(s, round(Int, (L - 1) / (R * C) * sum([nl[l] for l in 1:r])))
     end
 
     k = 1
     new_img = Array{Float64, 2}(undef, R, C)
     for i in 1:R, j in 1:C
-        l = floor(Int, mat[i, j].val * (L - 1))
+        l = round(Int, mat[i, j].val * (L - 1))
 
         l = min(l, L - 1)
         l = max(l, 1)
@@ -43,7 +43,7 @@ function hist_matching(img_a, img_b)
     L = 256
     new_img = Array{Float64, 2}(undef, R, C)
     for (i, v) in enumerate(img_a)
-        r = floor(Int, v.val * (L - 1)) # Convert to Int, ranging from 0 to 255.
+        r = round(Int, v.val * (L - 1)) # Convert to Int, ranging from 0 to 255.
 
         r = min(r, L - 1)
         r = max(r, 1)
@@ -59,7 +59,7 @@ function find_closest(value, vector)
     min = abs(vector[1] - value)
     i_cl = 1
     for (i, v) in enumerate(vector)
-        if abs(v - value) < min
+        if abs(v - value) < min - 0.00001
             min = abs(v - value)
             i_cl = i
         end
@@ -74,7 +74,7 @@ function hist_img(img, figname)
     s = map(x -> floor(Int, x.val * (L - 1)), s)
     nl = zeros(Int, L)
     [nl[l + 1] += 1 for l in s]
-    p = plot(0:(L - 1), nl, legend=false)
+    p = plot(0:(L - 1), nl, xaxis="Nível de cinza", yaxis="Quantidade de pixels com nível de cinza", legend=false)
     display(p)
     savefig(p, figname)
 end
@@ -85,7 +85,7 @@ function hist_img2(img, figname)
     s = map(x -> floor(Int, x * (L - 1)), s)
     nl = zeros(Int, L)
     [nl[l + 1] += 1 for l in s]
-    p = plot(0:(L - 1), nl, legend=false)
+    p = plot(0:(L - 1), nl, xaxis="Nível de cinza", yaxis="Quantidade de pixels com nível de cinza", legend=false)
     display(p)
     savefig(p, figname)
 end
